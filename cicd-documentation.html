@@ -2,1154 +2,1079 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
 
-    <title>Azure AKS CI/CD Pipeline | Shrey Malla</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <meta name="description"
-        content="Technical documentation for a GitHub Actions CI/CD pipeline deploying a containerised Node.js application to Azure Kubernetes Service.">
+    <meta name="description" content="Azure AKS and GitHub Actions CI/CD project by Shreyas Malla." />
 
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <meta name="author" content="Shreyas Malla" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <title>Azure AKS CI/CD Pipeline | Shreyas Malla</title>
 
-    <link href="css/styles.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <link href="css/styles.css" rel="stylesheet" />
 
     <style>
-        :root {
-            --page-background: #f8f9fa;
-            --card-background: #ffffff;
-            --code-background: #111827;
-            --text-primary: #1f2937;
-            --text-secondary: #64748b;
-            --border-colour: #dbe3ec;
-            --accent: #1e30f3;
-            --accent-secondary: #9333ea;
-            --success: #15803d;
-        }
-
-        body {
-            background: var(--page-background);
-            color: var(--text-primary);
-        }
-
-        .documentation-header {
-            padding: 5rem 0 4rem;
+        .project-documentation {
+            background: #181818;
             color: #ffffff;
+        }
+
+        .documentation-hero {
+            padding: 6rem 0;
             background:
-                radial-gradient(circle at top right,
-                    rgba(147, 51, 234, 0.75),
-                    transparent 36%),
-                linear-gradient(135deg, #111827, #1e30f3);
+                radial-gradient(circle at 80% 20%,
+                    rgba(104, 76, 255, 0.28),
+                    transparent 35%),
+                #111111;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .documentation-header h1 {
-            max-width: 900px;
-            font-size: clamp(2.3rem, 5vw, 4rem);
+        .documentation-hero h1 {
+            max-width: 850px;
+            font-size: clamp(2.7rem, 6vw, 5rem);
+            line-height: 1.05;
+            letter-spacing: -0.05em;
+        }
+
+        .documentation-hero .lead {
+            max-width: 780px;
+            color: #b8b8c4;
+        }
+
+        .project-label {
+            color: #a98cff;
+            font-size: 0.8rem;
             font-weight: 800;
-            line-height: 1.1;
-        }
-
-        .documentation-header p {
-            max-width: 820px;
-            margin-top: 1.25rem;
-            color: #dbeafe;
-            font-size: 1.12rem;
-            line-height: 1.8;
-        }
-
-        .technology-badge {
-            display: inline-block;
-            margin: 0.3rem 0.25rem 0.3rem 0;
-            padding: 0.42rem 0.75rem;
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.16);
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .documentation-layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 270px;
-            gap: 2rem;
-            align-items: start;
-        }
-
-        .documentation-content {
-            min-width: 0;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
         }
 
         .documentation-section {
-            margin-bottom: 1.75rem;
-            padding: 2rem;
-            background: var(--card-background);
-            border: 1px solid var(--border-colour);
-            border-radius: 1rem;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+            padding: 5rem 0;
+        }
+
+        .documentation-section.alt-section {
+            background: #111111;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .documentation-section h2 {
-            margin-bottom: 1rem;
-            font-size: 1.65rem;
-            font-weight: 750;
-        }
-
-        .documentation-section h3 {
-            margin-top: 1.75rem;
-            margin-bottom: 0.75rem;
-            font-size: 1.2rem;
-            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            letter-spacing: -0.04em;
         }
 
         .documentation-section p,
-        .documentation-section li {
-            color: var(--text-secondary);
-            line-height: 1.75;
+        .documentation-section li,
+        .documentation-section td {
+            color: #b8b8c4;
         }
 
-        .documentation-section strong {
-            color: var(--text-primary);
-        }
-
-        .documentation-section ul,
-        .documentation-section ol {
-            padding-left: 1.35rem;
-        }
-
-        .documentation-section li {
-            margin-bottom: 0.45rem;
-        }
-
-        .documentation-navigation {
-            position: sticky;
-            top: 1.5rem;
-            padding: 1.25rem;
-            background: #ffffff;
-            border: 1px solid var(--border-colour);
+        .project-card {
+            height: 100%;
+            padding: 1.75rem;
+            background: #111111;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 1rem;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
         }
 
-        .documentation-navigation h2 {
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            font-weight: 750;
+        .alt-section .project-card {
+            background: #181818;
         }
 
-        .documentation-navigation a {
+        .project-card i {
+            color: #9671ff;
+            font-size: 1.8rem;
+        }
+
+        .project-card h3 {
+            margin-top: 1rem;
+            font-size: 1.15rem;
+        }
+
+        .project-card p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        .project-card img {
             display: block;
-            margin-bottom: 0.35rem;
-            padding: 0.55rem 0.7rem;
-            color: var(--text-secondary);
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-size: 0.92rem;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .documentation-navigation a:hover {
-            color: var(--accent);
-            background: #eef2ff;
+        .project-card a img {
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .project-card a:hover img {
+            transform: translateY(-2px);
+            border-color: rgba(150, 113, 255, 0.7);
         }
 
         .architecture-flow {
             display: grid;
-            grid-template-columns: repeat(5, minmax(120px, 1fr));
-            gap: 0.7rem;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
         }
 
         .architecture-item {
-            position: relative;
-            padding: 1.2rem 0.85rem;
-            text-align: center;
-            background: #f8fafc;
-            border: 1px solid var(--border-colour);
-            border-radius: 0.8rem;
+            padding: 1.5rem;
+            background: #111111;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
         }
 
-        .architecture-item i {
+        .architecture-number {
             display: block;
-            margin-bottom: 0.6rem;
-            color: var(--accent);
-            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
+            color: #9671ff;
+            font-size: 0.75rem;
+            font-weight: 800;
         }
 
-        .architecture-item strong {
-            display: block;
-            font-size: 0.95rem;
+        .architecture-item h3 {
+            font-size: 1rem;
         }
 
-        .architecture-item span {
-            display: block;
-            margin-top: 0.3rem;
-            color: var(--text-secondary);
-            font-size: 0.78rem;
+        .architecture-item p {
+            margin-bottom: 0;
+            font-size: 0.82rem;
         }
 
-        .pipeline-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 1rem;
-            margin-top: 1.25rem;
+        .documentation-table {
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
         }
 
-        .pipeline-card {
-            padding: 1.25rem;
-            background: #f8fafc;
-            border: 1px solid var(--border-colour);
-            border-radius: 0.8rem;
-        }
-
-        .pipeline-card h3 {
-            margin: 0 0 0.65rem;
-            font-size: 1.05rem;
-        }
-
-        .pipeline-card p {
-            margin: 0;
-        }
-
-        .environment-table {
+        .documentation-table table {
             width: 100%;
-            margin-top: 1rem;
+            min-width: 750px;
+            margin: 0;
             border-collapse: collapse;
+            background: #111111;
         }
 
-        .environment-table th,
-        .environment-table td {
-            padding: 0.9rem;
-            border: 1px solid var(--border-colour);
+        .documentation-table th,
+        .documentation-table td {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             text-align: left;
             vertical-align: top;
         }
 
-        .environment-table th {
-            color: var(--text-primary);
-            background: #f1f5f9;
+        .documentation-table th {
+            color: #c9b9ff;
+            font-size: 0.75rem;
+            text-transform: uppercase;
         }
 
-        .environment-table td {
-            color: var(--text-secondary);
+        .documentation-table tr:last-child td {
+            border-bottom: 0;
         }
 
-        .evidence-image {
-            width: 100%;
-            margin-top: 1rem;
-            border: 1px solid var(--border-colour);
-            border-radius: 0.75rem;
-            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.1);
-        }
-
-        figure {
-            margin: 1.5rem 0 0;
-        }
-
-        figcaption {
-            margin-top: 0.7rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .proof-chain {
+        .approval-box {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.6rem;
-            margin-top: 1.25rem;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(63, 201, 124, 0.08);
+            border: 1px solid rgba(63, 201, 124, 0.3);
+            border-radius: 1rem;
         }
 
-        .proof-chain span {
-            padding: 0.65rem 0.8rem;
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-            border-radius: 0.65rem;
-            color: #3730a3;
-            font-size: 0.9rem;
-            font-weight: 650;
+        .approval-box i {
+            color: #3fc97c;
+            font-size: 1.8rem;
         }
 
-        .proof-chain i {
-            color: var(--accent);
-        }
-
-        .success-box {
-            margin-top: 1.25rem;
-            padding: 1rem 1.1rem;
-            color: #166534;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-left: 5px solid var(--success);
-            border-radius: 0.6rem;
-        }
-
-        .note-box {
-            margin-top: 1.25rem;
-            padding: 1rem 1.1rem;
-            color: #854d0e;
-            background: #fefce8;
-            border: 1px solid #fde68a;
-            border-left: 5px solid #eab308;
-            border-radius: 0.6rem;
-        }
-
-        pre {
-            overflow-x: auto;
-            margin-top: 1rem;
-            padding: 1.1rem;
-            color: #e5e7eb;
-            background: var(--code-background);
-            border-radius: 0.75rem;
-            font-size: 0.88rem;
-            line-height: 1.6;
-        }
-
-        code {
-            color: #c026d3;
-        }
-
-        pre code {
-            color: inherit;
+        .approval-box p {
+            margin-bottom: 0;
         }
 
         .result-list {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 0.8rem;
+            margin: 0;
             padding: 0;
             list-style: none;
         }
 
         .result-list li {
-            margin: 0;
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.8rem;
             padding: 1rem;
-            background: #f8fafc;
-            border: 1px solid var(--border-colour);
+            background: #111111;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 0.75rem;
         }
 
-        .result-list i {
-            margin-right: 0.45rem;
-            color: var(--success);
+        .alt-section .result-list li {
+            background: #181818;
         }
 
-        .footer-link {
-            color: inherit;
+        .result-list i {
+            flex-shrink: 0;
+            color: #3fc97c;
+        }
+
+        .code-path {
+            padding: 1.5rem;
+            overflow-x: auto;
+            background: #090909;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            color: #d5caff;
+        }
+
+        .documentation-footer {
+            padding: 2rem 0;
+            color: #9292a0;
+            background: #0c0c0c;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .documentation-footer a {
+            color: #c9b9ff;
             text-decoration: none;
         }
 
-        .footer-link:hover {
-            color: var(--accent);
+        .documentation-footer a:hover {
+            color: #ffffff;
         }
 
         @media (max-width: 992px) {
-            .documentation-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .documentation-navigation {
-                position: static;
-                order: -1;
-            }
-
             .architecture-flow {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 576px) {
-            .documentation-header {
-                padding: 3.5rem 0 3rem;
+            .documentation-hero {
+                padding: 4rem 0;
             }
 
             .documentation-section {
-                padding: 1.3rem;
+                padding: 3.5rem 0;
             }
 
-            .architecture-flow,
-            .pipeline-grid,
-            .result-list {
-                grid-template-columns: 1fr;
-            }
-
-            .environment-table {
-                font-size: 0.82rem;
+            .documentation-footer .container {
+                flex-direction: column;
+                gap: 0.75rem;
             }
         }
     </style>
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="project-documentation">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-        <div class="container px-5">
-            <a class="navbar-brand" href="index.html">
-                <span class="fw-bolder text-primary">Shrey Malla</span>
-            </a>
+    <main>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="resume.html">Resume</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="projects.html">Projects</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <main class="flex-shrink-0">
-
-        <header class="documentation-header">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark py-3">
             <div class="container px-5">
-                <div class="mb-3">
-                    <span class="technology-badge">GitHub Actions</span>
-                    <span class="technology-badge">Azure AKS</span>
-                    <span class="technology-badge">Kubernetes</span>
-                    <span class="technology-badge">Docker</span>
-                    <span class="technology-badge">NGINX Ingress</span>
-                    <span class="technology-badge">Node.js</span>
-                    <span class="technology-badge">MongoDB</span>
+                <a class="navbar-brand" href="index.html">
+                    <span class="fw-bolder text-primary">
+                        Shreyas Malla
+                    </span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="projects.html">
+                                Projects
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+        </nav>
 
-                <h1>Azure AKS CI/CD Pipeline</h1>
+        <!-- Hero -->
+        <header class="documentation-hero">
+            <div class="container px-5">
+                <p class="project-label">
+                    DevOps Project · Microsoft Azure
+                </p>
 
-                <p>
-                    A multi-environment CI/CD project that tests and
-                    containerises a Node.js application, publishes
-                    commit-tagged Docker images, and deploys them to
+                <h1 class="fw-bolder mb-4">
+                    Multi-Environment CI/CD on Azure Kubernetes Service
+                </h1>
+
+                <p class="lead mb-4">
+                    An end-to-end GitHub Actions pipeline that tests,
+                    containerises and deploys a Node.js application to
                     development and production environments in Azure
                     Kubernetes Service.
                 </p>
 
-                <div class="d-flex flex-wrap gap-2 mt-4">
-                    <a class="btn btn-light px-4" href="https://github.com/mallashrey/Github-Actions" target="_blank"
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-primary btn-lg" href="https://solar-system.20.248.255.103.nip.io" target="_blank"
                         rel="noopener noreferrer">
+                        <i class="bi bi-box-arrow-up-right me-2"></i>
+                        View Live Deployment
+                    </a>
+
+                    <a class="btn btn-outline-light btn-lg" href="https://github.com/mallashrey/Github-Actions"
+                        target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-github me-2"></i>
                         View Source Code
                     </a>
 
-                    <a class="btn btn-outline-light px-4" href="projects.html">
+                    <a class="btn btn-outline-light btn-lg" href="projects.html">
                         <i class="bi bi-arrow-left me-2"></i>
                         Back to Projects
                     </a>
                 </div>
+
+                <p class="small text-muted mt-3 mb-0">
+                    The lab endpoint is available while the AKS cluster
+                    is running.
+                </p>
             </div>
         </header>
 
-        <section class="py-5">
+        <!-- Overview -->
+        <section class="documentation-section">
             <div class="container px-5">
-                <div class="documentation-layout">
-
-                    <div class="documentation-content">
-
-                        <section class="documentation-section" id="overview">
-                            <h2>
-                                <i class="bi bi-info-circle me-2 text-primary"></i>
-                                Project Overview
-                            </h2>
-
-                            <p>
-                                This project demonstrates an end-to-end
-                                DevOps delivery process using GitHub Actions,
-                                Docker and Azure Kubernetes Service. The
-                                pipeline automatically validates application
-                                changes, builds a container image and deploys
-                                the application into separate Kubernetes
-                                namespaces.
-                            </p>
-
-                            <p>
-                                Feature-branch changes are deployed to the
-                                <strong>development</strong> namespace.
-                                Changes merged into the
-                                <strong>main</strong> branch are eligible for
-                                deployment to the
-                                <strong>production</strong> namespace.
-                                Production deployment is protected through a
-                                GitHub Environment approval requirement.
-                            </p>
-
-                            <div class="success-box">
-                                <strong>Completed result:</strong>
-                                a working Node.js application running as
-                                multiple Kubernetes pods in Azure AKS and
-                                exposed through an NGINX Ingress Controller.
-                            </div>
-                        </section>
-
-                        <section class="documentation-section" id="architecture">
-                            <h2>
-                                <i class="bi bi-diagram-3 me-2 text-primary"></i>
-                                Architecture
-                            </h2>
-
-                            <p>
-                                Application changes travel through automated
-                                testing, image creation and Kubernetes
-                                deployment before being exposed through the
-                                public ingress endpoint.
-                            </p>
-
-                            <div class="architecture-flow">
-                                <div class="architecture-item">
-                                    <i class="bi bi-github"></i>
-                                    <strong>GitHub</strong>
-                                    <span>Source code and workflow</span>
-                                </div>
-
-                                <div class="architecture-item">
-                                    <i class="bi bi-check2-circle"></i>
-                                    <strong>CI Testing</strong>
-                                    <span>Tests and coverage</span>
-                                </div>
-
-                                <div class="architecture-item">
-                                    <i class="bi bi-box-seam"></i>
-                                    <strong>Container</strong>
-                                    <span>Commit-tagged image</span>
-                                </div>
-
-                                <div class="architecture-item">
-                                    <i class="bi bi-cloud"></i>
-                                    <strong>Azure AKS</strong>
-                                    <span>Development and production</span>
-                                </div>
-
-                                <div class="architecture-item">
-                                    <i class="bi bi-globe2"></i>
-                                    <strong>Ingress</strong>
-                                    <span>Public application routing</span>
-                                </div>
-                            </div>
-
-                            <h3>Azure configuration</h3>
-
-                            <ul>
-                                <li>
-                                    <strong>Platform:</strong>
-                                    Azure Kubernetes Service
-                                </li>
-
-                                <li>
-                                    <strong>Cluster:</strong>
-                                    aks-solar-system-dev
-                                </li>
-
-                                <li>
-                                    <strong>Region:</strong>
-                                    Australia East
-                                </li>
-
-                                <li>
-                                    <strong>Networking:</strong>
-                                    Azure CNI Overlay
-                                </li>
-
-                                <li>
-                                    <strong>Ingress:</strong>
-                                    NGINX Ingress Controller
-                                </li>
-
-                                <li>
-                                    <strong>Application namespaces:</strong>
-                                    development and production
-                                </li>
-
-                                <li>
-                                    <strong>Production replicas:</strong>
-                                    two application pods
-                                </li>
-                            </ul>
-                        </section>
-
-                        <section class="documentation-section" id="pipeline">
-                            <h2>
-                                <i class="bi bi-git me-2 text-primary"></i>
-                                CI/CD Pipeline
-                            </h2>
-
-                            <p>
-                                The GitHub Actions workflow separates
-                                continuous integration from environment
-                                deployment. Deployment jobs run only after
-                                the required testing and containerisation jobs
-                                complete successfully.
-                            </p>
-
-                            <div class="pipeline-grid">
-                                <div class="pipeline-card">
-                                    <h3>1. Unit testing</h3>
-                                    <p>
-                                        Executes the automated test suite
-                                        across multiple supported Node.js
-                                        versions using a build matrix.
-                                    </p>
-                                </div>
-
-                                <div class="pipeline-card">
-                                    <h3>2. Code coverage</h3>
-                                    <p>
-                                        Generates coverage information to
-                                        confirm that application behaviour is
-                                        validated before deployment.
-                                    </p>
-                                </div>
-
-                                <div class="pipeline-card">
-                                    <h3>3. Containerisation</h3>
-                                    <p>
-                                        Builds the Docker image and publishes
-                                        versioned images using the Git commit
-                                        SHA as the image tag.
-                                    </p>
-                                </div>
-
-                                <div class="pipeline-card">
-                                    <h3>4. Kubernetes deployment</h3>
-                                    <p>
-                                        Applies the Deployment, Service and
-                                        Ingress manifests to the appropriate
-                                        AKS namespace.
-                                    </p>
-                                </div>
-
-                                <div class="pipeline-card">
-                                    <h3>5. Environment protection</h3>
-                                    <p>
-                                        Uses a GitHub Environment approval
-                                        gate before allowing deployment to
-                                        production.
-                                    </p>
-                                </div>
-
-                                <div class="pipeline-card">
-                                    <h3>6. Integration testing</h3>
-                                    <p>
-                                        Sends a request to the deployed
-                                        application health endpoint and
-                                        verifies the returned status.
-                                    </p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section class="documentation-section" id="environments">
-                            <h2>
-                                <i class="bi bi-layers me-2 text-primary"></i>
-                                Deployment Environments
-                            </h2>
-
-                            <table class="environment-table">
-                                <thead>
-                                    <tr>
-                                        <th>Git event</th>
-                                        <th>Environment</th>
-                                        <th>Kubernetes namespace</th>
-                                        <th>Deployment behaviour</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <tr>
-                                        <td>Push to feature/*</td>
-                                        <td>Development</td>
-                                        <td>development</td>
-                                        <td>
-                                            Automatically deploys and runs
-                                            the development integration test.
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Pull request to main</td>
-                                        <td>Validation</td>
-                                        <td>No production deployment</td>
-                                        <td>
-                                            Runs validation without deploying
-                                            an unmerged change to production.
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Push or merge to main</td>
-                                        <td>Production</td>
-                                        <td>production</td>
-                                        <td>
-                                            Waits for manual approval before
-                                            deploying and testing production.
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <h3>Manual production approval</h3>
-
-                            <p>
-                                The production job references a protected
-                                GitHub Environment. Even after the preceding
-                                jobs succeed, the deployment pauses until an
-                                authorised reviewer approves it. This reduces
-                                the risk of automatically releasing an
-                                unintended change.
-                            </p>
-                        </section>
-
-                        <section class="documentation-section" id="development-evidence">
-                            <h2>
-                                <i class="bi bi-code-square me-2 text-primary"></i>
-                                Development Pipeline Evidence
-                            </h2>
-
-                            <p>
-                                The following workflow run was triggered from
-                                a feature branch. Unit testing, coverage,
-                                containerisation, development deployment and
-                                development integration testing completed
-                                successfully. Production was correctly
-                                skipped.
-                            </p>
-
-                            <figure>
-                                <img class="evidence-image" src="assets/aks-dev-pipeline.png"
-                                    alt="Successful GitHub Actions development pipeline" loading="lazy">
-
-                                <figcaption>
-                                    Feature-branch workflow showing the
-                                    successful development deployment and
-                                    integration test while the production
-                                    jobs remain skipped.
-                                </figcaption>
-                            </figure>
-                        </section>
-
-                        <section class="documentation-section" id="production-evidence">
-                            <h2>
-                                <i class="bi bi-shield-check me-2 text-primary"></i>
-                                Production Pipeline Evidence
-                            </h2>
-
-                            <p>
-                                After the feature branch was merged into
-                                main, the production job became eligible to
-                                run. The protected production environment
-                                required approval before the workflow could
-                                continue.
-                            </p>
-
-                            <figure>
-                                <img class="evidence-image" src="assets/aks-prod-pipeline.png"
-                                    alt="Successful GitHub Actions production pipeline with approval" loading="lazy">
-
-                                <figcaption>
-                                    Main-branch workflow showing successful
-                                    production deployment and integration
-                                    testing after the protected environment
-                                    was approved.
-                                </figcaption>
-                            </figure>
-                        </section>
-
-                        <section class="documentation-section" id="kubernetes">
-                            <h2>
-                                <i class="bi bi-boxes me-2 text-primary"></i>
-                                Kubernetes Resources
-                            </h2>
-
-                            <p>
-                                Kubernetes manifests define the application
-                                Deployment, internal Service and external
-                                Ingress. Development and production use
-                                separate namespaces so that releases can be
-                                tested without replacing the production
-                                workload.
-                            </p>
-
-                            <ul>
-                                <li>
-                                    <strong>Deployment:</strong>
-                                    manages the application pods, container
-                                    image and replica count.
-                                </li>
-
-                                <li>
-                                    <strong>Service:</strong>
-                                    provides a stable internal endpoint for
-                                    the application pods on port 3000.
-                                </li>
-
-                                <li>
-                                    <strong>Ingress:</strong>
-                                    routes incoming HTTP or HTTPS requests
-                                    through the NGINX Ingress Controller.
-                                </li>
-
-                                <li>
-                                    <strong>Secret:</strong>
-                                    supplies MongoDB credentials to the
-                                    application without storing the password
-                                    directly in the deployment manifest.
-                                </li>
-
-                                <li>
-                                    <strong>Namespaces:</strong>
-                                    isolate development and production
-                                    resources inside the same AKS cluster.
-                                </li>
-                            </ul>
-
-                            <figure>
-                                <img class="evidence-image" src="assets/aks-workloads.png"
-                                    alt="Azure AKS workloads showing development and production deployments"
-                                    loading="lazy">
-
-                                <figcaption>
-                                    Azure AKS workloads showing the
-                                    solar-system application in development
-                                    and production, together with the NGINX
-                                    Ingress Controller and Kubernetes system
-                                    services.
-                                </figcaption>
-                            </figure>
-                        </section>
-
-                        <section class="documentation-section" id="verification">
-                            <h2>
-                                <i class="bi bi-patch-check me-2 text-primary"></i>
-                                Deployment Verification
-                            </h2>
-
-                            <p>
-                                The container image deployed to production is
-                                tagged with the Git commit SHA. This connects
-                                the source revision processed by GitHub
-                                Actions to the exact container image running
-                                inside AKS.
-                            </p>
-
-                            <div class="proof-chain">
-                                <span>GitHub commit</span>
-                                <i class="bi bi-arrow-right"></i>
-                                <span>Workflow run</span>
-                                <i class="bi bi-arrow-right"></i>
-                                <span>Docker image tag</span>
-                                <i class="bi bi-arrow-right"></i>
-                                <span>AKS deployment</span>
-                                <i class="bi bi-arrow-right"></i>
-                                <span>Running pods</span>
-                            </div>
-
-                            <figure>
-                                <img class="evidence-image" src="assets/aks-image-verification.png"
-                                    alt="Commit-tagged production Docker image running in AKS" loading="lazy">
-
-                                <figcaption>
-                                    The production Deployment references a
-                                    Docker image tagged with the GitHub commit
-                                    SHA. Two production pods are shown in the
-                                    Running state using the AKS node pool.
-                                </figcaption>
-                            </figure>
-
-                            <p class="mt-4">
-                                This creates a traceable deployment record:
-                                the GitHub workflow processed a specific
-                                commit, published a matching image and
-                                deployed that version to the production
-                                namespace.
-                            </p>
-                        </section>
-
-                        <section class="documentation-section" id="application">
-                            <h2>
-                                <i class="bi bi-window me-2 text-primary"></i>
-                                Deployed Application
-                            </h2>
-
-                            <p>
-                                The Solar System web application is exposed
-                                through the NGINX Ingress Controller. The
-                                page also displays the name of the pod that
-                                processed the request, providing visible
-                                confirmation that the response came from a
-                                Kubernetes workload.
-                            </p>
-
-                            <figure>
-                                <img class="evidence-image" src="assets/aks-live-application.png"
-                                    alt="Solar System application running through Azure AKS" loading="lazy">
-
-                                <figcaption>
-                                    The deployed Solar System application
-                                    served through the AKS ingress endpoint.
-                                    The displayed pod name confirms that the
-                                    request was handled by a Kubernetes pod.
-                                </figcaption>
-                            </figure>
-
-                            <div class="note-box">
-                                <strong>Availability note:</strong>
-                                the AKS cluster may be stopped when it is not
-                                being demonstrated to reduce Azure costs.
-                                The screenshots, source code and deployment
-                                evidence remain available even when the live
-                                environment is offline.
-                            </div>
-                        </section>
-
-                        <section class="documentation-section" id="troubleshooting">
-                            <h2>
-                                <i class="bi bi-tools me-2 text-primary"></i>
-                                Troubleshooting and Improvements
-                            </h2>
-
-                            <h3>Missing Kubernetes namespaces</h3>
-
-                            <p>
-                                The initial deployment failed because the
-                                development namespace did not exist. The
-                                namespace was created before applying the
-                                application resources.
-                            </p>
-
-                            <pre><code>kubectl create namespace development
-kubectl create namespace production</code></pre>
-
-                            <h3>Invalid ingress hostname</h3>
-
-                            <p>
-                                The ingress hostname initially contained an
-                                empty IP address, resulting in a hostname such
-                                as
-                                <code>solar-system-development..nip.io</code>.
-                                The workflow was updated to retrieve the
-                                external IP address from the NGINX controller
-                                before generating and applying the ingress
-                                manifest.
-                            </p>
-
-                            <h3>Missing job output</h3>
-
-                            <p>
-                                The integration-test job originally received
-                                a null ingress URL because the deployment job
-                                did not expose the step value as a job-level
-                                output. The workflow was corrected by
-                                assigning an ID to the step and mapping its
-                                value through the job’s
-                                <code>outputs</code> section.
-                            </p>
-
-                            <h3>Application readiness</h3>
-
-                            <p>
-                                An early integration test reached the ingress
-                                before the new pods were fully ready. The
-                                deployment process was improved by waiting
-                                for the Kubernetes rollout before testing the
-                                public endpoint.
-                            </p>
-
-                            <pre><code>kubectl rollout status deployment/solar-system \
-  --namespace production \
-  --timeout=180s</code></pre>
-
-                            <h3>Expired Kubernetes credentials</h3>
-
-                            <p>
-                                Azure Cloud Shell later returned an
-                                authentication error when querying the
-                                cluster. The AKS credentials were refreshed
-                                before running further
-                                <code>kubectl</code> commands.
-                            </p>
-
-                            <pre><code>az aks get-credentials \
-  --resource-group rg-solar-system-aks \
-  --name aks-solar-system-dev \
-  --admin \
-  --overwrite-existing</code></pre>
-                        </section>
-
-                        <section class="documentation-section" id="security">
-                            <h2>
-                                <i class="bi bi-lock me-2 text-primary"></i>
-                                Security Controls
-                            </h2>
-
-                            <ul>
-                                <li>
-                                    Sensitive MongoDB passwords are stored as
-                                    GitHub Secrets rather than committed to
-                                    source control.
-                                </li>
-
-                                <li>
-                                    Kubernetes Secrets provide application
-                                    credentials to the running containers.
-                                </li>
-
-                                <li>
-                                    Production deployment uses a protected
-                                    GitHub Environment with manual approval.
-                                </li>
-
-                                <li>
-                                    Development and production workloads are
-                                    separated using Kubernetes namespaces.
-                                </li>
-
-                                <li>
-                                    Docker images use immutable commit-based
-                                    tags for deployment traceability.
-                                </li>
-
-                                <li>
-                                    GitHub Actions runs automated tests before
-                                    any environment deployment begins.
-                                </li>
-                            </ul>
-                        </section>
-
-                        <section class="documentation-section" id="outcomes">
-                            <h2>
-                                <i class="bi bi-trophy me-2 text-primary"></i>
-                                Project Outcomes
-                            </h2>
-
-                            <ul class="result-list">
-                                <li>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    Built a multi-stage GitHub Actions
-                                    pipeline.
-                                </li>
-
-                                <li>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    Tested the application across multiple
-                                    Node.js versions.
-                                </li>
-
-                                <li>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    Published commit-tagged Docker images.
-                                </li>
-
-                                <li>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    Connected GitHub Actions to Azure AKS.
-                                </li>
-
-                                <li>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    Deployed isolated development and
-                                    production environments.
-                                </li>
-
-                                <li>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    Implemented manual production approval.
-                                </li>
-
-                                <li>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    Configured NGINX ingress routing.
-                                </li>
-
-                                <li>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    Verified releases through post-deployment
-                                    integration testing.
-                                </li>
-                            </ul>
-
-                            <div class="d-flex flex-wrap gap-2 mt-4">
-                                <a class="btn btn-primary px-4" href="https://github.com/mallashrey/Github-Actions"
-                                    target="_blank" rel="noopener noreferrer">
-                                    <i class="bi bi-github me-2"></i>
-                                    View GitHub Repository
-                                </a>
-
-                                <a class="btn btn-outline-dark px-4" href="projects.html">
-                                    <i class="bi bi-grid me-2"></i>
-                                    View Other Projects
-                                </a>
-                            </div>
-                        </section>
-
+                <div class="row gx-5">
+                    <div class="col-lg-5">
+                        <p class="project-label">
+                            Project Overview
+                        </p>
+
+                        <h2 class="fw-bolder">
+                            From source change to verified deployment
+                        </h2>
                     </div>
 
-                    <aside class="documentation-navigation">
-                        <h2>On this page</h2>
+                    <div class="col-lg-7">
+                        <p>
+                            This project demonstrates a complete CI/CD
+                            workflow rather than only building a Docker
+                            image.
+                        </p>
 
-                        <a href="#overview">Project overview</a>
-                        <a href="#architecture">Architecture</a>
-                        <a href="#pipeline">CI/CD pipeline</a>
-                        <a href="#environments">Environments</a>
-                        <a href="#development-evidence">Development evidence</a>
-                        <a href="#production-evidence">Production evidence</a>
-                        <a href="#kubernetes">Kubernetes resources</a>
-                        <a href="#verification">Deployment verification</a>
-                        <a href="#application">Deployed application</a>
-                        <a href="#troubleshooting">Troubleshooting</a>
-                        <a href="#security">Security controls</a>
-                        <a href="#outcomes">Project outcomes</a>
-                    </aside>
+                        <p>
+                            Feature-branch changes run automated tests
+                            and deploy to the
+                            <code>development</code> namespace. After
+                            the change is reviewed and merged into
+                            <code>main</code>, the workflow prepares
+                            the production release.
+                        </p>
 
+                        <p>
+                            The production deployment uses a protected
+                            GitHub Environment. The workflow pauses
+                            until the release is manually approved
+                            before deploying into the
+                            <code>production</code> namespace.
+                        </p>
+
+                        <p>
+                            Both environments run in Azure Kubernetes
+                            Service and use NGINX Ingress to route
+                            external traffic to the application.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture -->
+        <section class="documentation-section alt-section">
+            <div class="container px-5">
+                <p class="project-label">
+                    Architecture
+                </p>
+
+                <h2 class="fw-bolder">
+                    Application delivery flow
+                </h2>
+
+                <div class="architecture-flow">
+                    <div class="architecture-item">
+                        <span class="architecture-number">01</span>
+
+                        <h3 class="fw-bold">
+                            GitHub Source
+                        </h3>
+
+                        <p>
+                            Code is pushed to a feature branch and
+                            reviewed before merging into main.
+                        </p>
+                    </div>
+
+                    <div class="architecture-item">
+                        <span class="architecture-number">02</span>
+
+                        <h3 class="fw-bold">
+                            Quality Gates
+                        </h3>
+
+                        <p>
+                            Unit tests run against Node.js 18, 19 and
+                            20, alongside code coverage.
+                        </p>
+                    </div>
+
+                    <div class="architecture-item">
+                        <span class="architecture-number">03</span>
+
+                        <h3 class="fw-bold">
+                            Container Image
+                        </h3>
+
+                        <p>
+                            Docker images are built and tagged using
+                            the Git commit SHA.
+                        </p>
+                    </div>
+
+                    <div class="architecture-item">
+                        <span class="architecture-number">04</span>
+
+                        <h3 class="fw-bold">
+                            AKS Deployment
+                        </h3>
+
+                        <p>
+                            Feature branches deploy to development.
+                            Main deploys to production after approval.
+                        </p>
+                    </div>
+
+                    <div class="architecture-item">
+                        <span class="architecture-number">05</span>
+
+                        <h3 class="fw-bold">
+                            Integration Test
+                        </h3>
+
+                        <p>
+                            GitHub Actions calls the externally routed
+                            <code>/live</code> endpoint.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline -->
+        <section class="documentation-section">
+            <div class="container px-5">
+                <p class="project-label">
+                    Pipeline Design
+                </p>
+
+                <h2 class="fw-bolder">
+                    Automated workflow stages
+                </h2>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-code-slash"></i>
+
+                            <h3 class="fw-bold">
+                                Matrix Unit Testing
+                            </h3>
+
+                            <p>
+                                Executes automated tests across Node.js
+                                versions 18, 19 and 20.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-graph-up"></i>
+
+                            <h3 class="fw-bold">
+                                Code Coverage
+                            </h3>
+
+                            <p>
+                                Measures application test coverage and
+                                publishes workflow artifacts.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-box-seam"></i>
+
+                            <h3 class="fw-bold">
+                                Containerisation
+                            </h3>
+
+                            <p>
+                                Builds Docker images and publishes
+                                versioned images to container
+                                registries.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-cloud"></i>
+
+                            <h3 class="fw-bold">
+                                Development Deployment
+                            </h3>
+
+                            <p>
+                                Feature-branch changes deploy
+                                automatically to the development
+                                namespace.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-shield-check"></i>
+
+                            <h3 class="fw-bold">
+                                Production Approval
+                            </h3>
+
+                            <p>
+                                The protected production environment
+                                requires manual approval before
+                                deployment.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-check-circle"></i>
+
+                            <h3 class="fw-bold">
+                                Integration Testing
+                            </h3>
+
+                            <p>
+                                Verifies the deployed application
+                                through its externally accessible health
+                                endpoint.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Environments -->
+        <section class="documentation-section alt-section">
+            <div class="container px-5">
+                <p class="project-label">
+                    Release Strategy
+                </p>
+
+                <h2 class="fw-bolder">
+                    Development and production separation
+                </h2>
+
+                <div class="documentation-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Source Event</th>
+                                <th>Target</th>
+                                <th>Control</th>
+                                <th>Validation</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Push to <code>feature/*</code>
+                                </td>
+
+                                <td>
+                                    <code>development</code> namespace
+                                </td>
+
+                                <td>
+                                    Automatic after CI succeeds
+                                </td>
+
+                                <td>
+                                    Development
+                                    <code>/live</code> test
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Merge or push to
+                                    <code>main</code>
+                                </td>
+
+                                <td>
+                                    <code>production</code> namespace
+                                </td>
+
+                                <td>
+                                    Manual GitHub Environment approval
+                                </td>
+
+                                <td>
+                                    Production
+                                    <code>/live</code> test
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="approval-box">
+                    <i class="bi bi-shield-check"></i>
+
+                    <div>
+                        <h3 class="fw-bold">
+                            Protected production deployment
+                        </h3>
+
+                        <p>
+                            A successful main-branch build does not
+                            deploy immediately. The production job
+                            pauses until the deployment is reviewed and
+                            manually approved.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kubernetes -->
+        <section class="documentation-section">
+            <div class="container px-5">
+                <p class="project-label">
+                    Kubernetes Implementation
+                </p>
+
+                <h2 class="fw-bolder">
+                    AKS resources
+                </h2>
+
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-diagram-3"></i>
+
+                            <h3 class="fw-bold">
+                                Deployments
+                            </h3>
+
+                            <p>
+                                Manage application replicas and rolling
+                                updates in development and production.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-hdd-network"></i>
+
+                            <h3 class="fw-bold">
+                                Services
+                            </h3>
+
+                            <p>
+                                ClusterIP Services expose the Node.js
+                                application internally on port 3000.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="project-card">
+                            <i class="bi bi-globe2"></i>
+
+                            <h3 class="fw-bold">
+                                NGINX Ingress
+                            </h3>
+
+                            <p>
+                                Routes external traffic from the Azure
+                                Load Balancer to the correct Kubernetes
+                                Service.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="fw-bold mb-3">
+                        Repository structure
+                    </h3>
+
+                    <pre class="code-path"><code>.github/workflows/solar-system.yml
+Dockerfile
+kubernetes/
+├── development/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── ingress.yaml
+└── production/
+    ├── deployment.yaml
+    ├── service.yaml
+    └── ingress.yaml</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deployment Evidence -->
+        <section class="documentation-section alt-section">
+            <div class="container px-5">
+                <p class="project-label">
+                    Deployment Evidence
+                </p>
+
+                <h2 class="fw-bolder">
+                    Pipeline and AKS results
+                </h2>
+
+                <p class="text-muted mb-5">
+                    Permanent evidence from the completed CI/CD
+                    pipeline and Azure Kubernetes Service deployment.
+                </p>
+
+                <div class="row g-4">
+
+                    <!-- Development Pipeline -->
+                    <div class="col-12">
+                        <div class="project-card">
+                            <h3 class="fw-bold mt-0 mb-3">
+                                Development CI/CD Pipeline
+                            </h3>
+
+                            <a href="assets/aks-dev-pipeline.png" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/aks-dev-pipeline.png" class="img-fluid rounded-3"
+                                    alt="Successful GitHub Actions development pipeline" />
+                            </a>
+
+                            <p class="mt-3 mb-0">
+                                A feature-branch workflow completing
+                                matrix unit testing, code coverage,
+                                containerisation, development deployment
+                                and integration testing. The production
+                                jobs remain skipped because the workflow
+                                was triggered from a feature branch.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Production Pipeline -->
+                    <div class="col-12">
+                        <div class="project-card">
+                            <h3 class="fw-bold mt-0 mb-3">
+                                Approved Production Deployment
+                            </h3>
+
+                            <a href="assets/aks-prod-pipeline.png" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/aks-prod-pipeline.png" class="img-fluid rounded-3"
+                                    alt="Successful production deployment after manual approval" />
+                            </a>
+
+                            <p class="mt-3 mb-0">
+                                The main-branch workflow after its
+                                protected production environment was
+                                manually approved. The production
+                                deployment and post-deployment
+                                integration test both completed
+                                successfully.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- AKS Workloads -->
+                    <div class="col-lg-6">
+                        <div class="project-card">
+                            <h3 class="fw-bold mt-0 mb-3">
+                                Healthy AKS Workloads
+                            </h3>
+
+                            <a href="assets/aks-workloads.png" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/aks-workloads.png" class="img-fluid rounded-3"
+                                    alt="Healthy development and production deployments in AKS" />
+                            </a>
+
+                            <p class="mt-3 mb-0">
+                                Azure AKS running the Solar System
+                                application in separate development and
+                                production namespaces. The NGINX
+                                Ingress Controller and supporting
+                                Kubernetes services are also healthy.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Live Application -->
+                    <div class="col-lg-6">
+                        <div class="project-card">
+                            <h3 class="fw-bold mt-0 mb-3">
+                                Deployed Application
+                            </h3>
+
+                            <a href="assets/aks-live-application.png" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/aks-live-application.png" class="img-fluid rounded-3"
+                                    alt="Solar System application deployed to an AKS pod" />
+                            </a>
+
+                            <p class="mt-3 mb-0">
+                                The containerised Solar System
+                                application served through the
+                                production NGINX Ingress. The pod name
+                                displayed by the application confirms
+                                that the response was generated by a
+                                Kubernetes pod.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Image and Pod Verification -->
+                    <div class="col-12">
+                        <div class="project-card">
+                            <h3 class="fw-bold mt-0 mb-3">
+                                Commit-to-Deployment Verification
+                            </h3>
+
+                            <a href="assets/aks-image-verification.png" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/aks-image-verification.png" class="img-fluid rounded-3"
+                                    alt="Commit-tagged Docker image and running production pods in Azure AKS" />
+                            </a>
+
+                            <p class="mt-3 mb-0">
+                                The production Kubernetes Deployment
+                                uses a Docker image tagged with the Git
+                                commit SHA. The same image is running
+                                across two healthy production pods in
+                                Azure AKS. This provides traceability
+                                from the GitHub commit and workflow run
+                                to the container image deployed in
+                                Kubernetes.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Security Controls -->
+        <section class="documentation-section">
+            <div class="container px-5">
+                <div class="row gx-5 align-items-start">
+                    <div class="col-lg-5">
+                        <p class="project-label">
+                            Security Controls
+                        </p>
+
+                        <h2 class="fw-bolder">
+                            Securing the delivery process
+                        </h2>
+
+                        <p>
+                            Security controls protect application
+                            credentials, separate deployment
+                            environments and prevent unapproved
+                            production releases.
+                        </p>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <ul class="result-list">
+                            <li>
+                                <i class="bi bi-shield-check"></i>
+
+                                Sensitive MongoDB passwords are stored
+                                as GitHub Secrets rather than committed
+                                to source control.
+                            </li>
+
+                            <li>
+                                <i class="bi bi-shield-check"></i>
+
+                                Kubernetes Secrets provide application
+                                credentials to the running containers.
+                            </li>
+
+                            <li>
+                                <i class="bi bi-shield-check"></i>
+
+                                Production deployment uses a protected
+                                GitHub Environment with manual approval.
+                            </li>
+
+                            <li>
+                                <i class="bi bi-shield-check"></i>
+
+                                Development and production workloads are
+                                separated using Kubernetes namespaces.
+                            </li>
+
+                            <li>
+                                <i class="bi bi-shield-check"></i>
+
+                                Docker images use immutable commit-based
+                                tags for deployment traceability.
+                            </li>
+
+                            <li>
+                                <i class="bi bi-shield-check"></i>
+
+                                GitHub Actions runs automated tests
+                                before any environment deployment
+                                begins.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section class="documentation-section alt-section">
+            <div class="container px-5">
+                <div class="row gx-5 align-items-center">
+                    <div class="col-lg-6">
+                        <p class="project-label">
+                            Project Outcome
+                        </p>
+
+                        <h2 class="fw-bolder">
+                            Skills demonstrated
+                        </h2>
+
+                        <p>
+                            The completed project connects source
+                            control, testing, container delivery,
+                            Kubernetes deployment and operational
+                            verification through a controlled release
+                            process.
+                        </p>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <ul class="result-list">
+                            <li>
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Branch-aware multi-environment
+                                deployments
+                            </li>
+
+                            <li>
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Azure Kubernetes Service administration
+                            </li>
+
+                            <li>
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Docker image creation and SHA-based
+                                tagging
+                            </li>
+
+                            <li>
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Automated unit and integration testing
+                            </li>
+
+                            <li>
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Manual production release approval
+                            </li>
+
+                            <li>
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Kubernetes Ingress and external routing
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-5">
+                    <a class="btn btn-primary btn-lg" href="https://github.com/mallashrey/Github-Actions"
+                        target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-github me-2"></i>
+                        View GitHub Repository
+                    </a>
+
+                    <a class="btn btn-outline-light btn-lg" href="https://solar-system.20.248.255.103.nip.io"
+                        target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-box-arrow-up-right me-2"></i>
+                        Open Live Application
+                    </a>
+
+                    <a class="btn btn-outline-light btn-lg" href="projects.html">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Back to Projects
+                    </a>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="bg-white py-4 mt-auto border-top">
-        <div class="container px-5">
-            <div class="row align-items-center justify-content-between
-                       flex-column flex-sm-row">
-                <div class="col-auto">
-                    <div class="small m-0">
-                        Copyright &copy; Shrey Malla 2026
-                    </div>
-                </div>
+    <!-- Footer -->
+    <footer class="documentation-footer">
+        <div class="container px-5 d-flex justify-content-between
+                   align-items-center">
+            <span>© 2026 Shreyas Malla</span>
 
-                <div class="col-auto">
-                    <a class="small footer-link" href="projects.html">
-                        Projects
-                    </a>
-
-                    <span class="mx-1">&middot;</span>
-
-                    <a class="small footer-link" href="contact.html">
-                        Contact
-                    </a>
-                </div>
-            </div>
+            <a href="projects.html">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Projects
+            </a>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="js/scripts.js"></script>
 </body>
 
 </html>
